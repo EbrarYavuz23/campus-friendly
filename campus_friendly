@@ -1,0 +1,666 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Student Information System'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StudentIDCard()),
+                );
+              },
+              child: Text('Student ID Card'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GradeSystemPage()),
+                );
+              },
+              child: Text('Grade System'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ClassSchedulePage()),
+                );
+              },
+              child: Text('Class Schedule'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CourseBooksPage()),
+                );
+              },
+              child: Text('Course Books'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AppointmentPage()),
+                );
+              },
+              child: Text('Appointment System'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GradeCalculatorPage()),
+                );
+              },
+              child: Text('Grade Calculator'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class StudentIDCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Student ID Card'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withAlpha(128),
+                  spreadRadius: 3,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Name: Serkan',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  'Surname: Algül',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Text(
+                      'Student Number:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      '23050702064',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Text(
+                      'Faculty:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'Faculty of Economics and Administrative Sciences',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Text(
+                      'Department:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'Management Information Systems',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Text(
+                      'E-Mail:',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'serkanalgul@stu.topkapi.edu.tr',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GradeSystemPage extends StatelessWidget {
+  final List<Course> courses = [
+    Course('FCC107', 'Basic Principles of Economics', 90, 85),
+    Course('IMS107', 'Introduction to Algorithms and Programming', 80, 95),
+    Course('IMS105', 'Management Information Systems', 90, 100),
+    Course('FCC109', 'Mathematics', 100, 90),
+    Course('FCC103', 'Basic Principles of Law', 70, 75),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Grade System'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final course = courses[index];
+                  final yearEndGrade = course.calculateYearEndGrade();
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      title: Text('${course.code} - ${course.name}'),
+                      subtitle: Text(
+                          'Midterm: ${course.midterm}, Final: ${course.finalExam}\nYear-End Grade: ${yearEndGrade.toStringAsFixed(2)} / 4.0'),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Overall GPA: ${calculateOverallGPA(courses).toStringAsFixed(2)} / 4.0',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double calculateOverallGPA(List<Course> courses) {
+    double totalGrade = 0;
+    for (var course in courses) {
+      totalGrade += course.calculateYearEndGrade();
+    }
+    return totalGrade / courses.length;
+  }
+}
+
+class Course {
+  final String code;
+  final String name;
+  final int midterm;
+  final int finalExam;
+
+  Course(this.code, this.name, this.midterm, this.finalExam);
+
+  double calculateYearEndGrade() {
+    return (midterm * 0.3 + finalExam * 0.7) / 25; // Scale to 4.0
+  }
+}
+
+class ClassSchedulePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Class Schedule'),
+        centerTitle: true,
+      ),
+      body: ScheduleTable(),
+    );
+  }
+}
+
+class ScheduleTable extends StatelessWidget {
+  final List<Map<String, String>> schedule = [
+    {
+      "Course": "Basic Principles of Economics",
+      "Date": "17.01.2025",
+      "Time": "10:00-12:00",
+      "Classroom": "C203"
+    },
+    {
+      "Course": "Management Information Systems",
+      "Date": "20.01.2025",
+      "Time": "12:00-14:00",
+      "Classroom": "D133"
+    },
+    {
+      "Course": "Mathematics",
+      "Date": "23.01.2025",
+      "Time": "09:00-12:00",
+      "Classroom": "E333"
+    },
+    {
+      "Course": "Basic Principles of Law",
+      "Date": "24.01.2025",
+      "Time": "12:00-15:00",
+      "Classroom": "C203"
+    },
+    {
+      "Course": "Introduction to Algorithms and Programming",
+      "Date": "27.01.2025",
+      "Time": "11:00-13:00",
+      "Classroom": "D105"
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        headingRowColor:
+            MaterialStateColor.resolveWith((states) => Colors.red.shade300),
+        columns: const [
+          DataColumn(
+              label: Text('Course',
+                  style: TextStyle(fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Date', style: TextStyle(fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Classroom',
+                  style: TextStyle(fontWeight: FontWeight.bold))),
+        ],
+        rows: schedule
+            .map(
+              (lesson) => DataRow(cells: [
+                DataCell(Text(lesson["Course"] ?? "")),
+                DataCell(Text(lesson["Date"] ?? "")),
+                DataCell(Text(lesson["Time"] ?? "")),
+                DataCell(Text(lesson["Classroom"] ?? "")),
+              ]),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class CourseBooksPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Course Books'),
+      ),
+      body: LinkListPage(),
+    );
+  }
+}
+
+class LinkListPage extends StatelessWidget {
+  final List<Map<String, String>> links = [
+    {
+      'title': 'Management Information Systems',
+      'url':
+          'https://repository.dinus.ac.id/docs/ajar/Kenneth_C.Laudon,Jane_P_.Laudon_-_Management_Information_Sysrem_13th_Edition_.pdf',
+    },
+    {
+      'title': 'Introduction to Algorithms and Programming',
+      'url': 'https://bugs.python.org/file47781/Tutorial_EDIT.pdf',
+    },
+    {
+      'title': 'Basic Principles of Law',
+      'url':
+          'https://digitalcommons.law.ggu.edu/cgi/viewcontent.cgi?article=1001&context=annlsurvey',
+    },
+    {
+      'title': 'Basic Principles of Economics',
+      'url': 'https://cdn.mises.org/Principles%20of%20Economics_5.pdf',
+    },
+  ];
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: DataTable(
+        columnSpacing: 20.0,
+        headingRowColor: MaterialStateColor.resolveWith(
+            (states) => Colors.blueGrey.shade100),
+        columns: const [
+          DataColumn(
+            label: Text(
+              'Title',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Action',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ),
+        ],
+        rows: links.map((link) {
+          return DataRow(
+            color:
+                MaterialStateColor.resolveWith((states) => Colors.white),
+            cells: [
+              DataCell(
+                Text(
+                  link['title']!,
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              DataCell(
+                IconButton(
+                  icon: Icon(
+                    Icons.open_in_new,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () => _launchURL(link['url']!),
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class AppointmentPage extends StatefulWidget {
+  @override
+  _AppointmentPageState createState() => _AppointmentPageState();
+}
+
+class _AppointmentPageState extends State<AppointmentPage> {
+  final List<String> people = [
+    'Engin Hengirmen',
+    'Gül Dertli',
+    'Batuhan Kocaoğlu',
+    'Pınar Küçük'
+  ];
+
+  String? selectedPerson;
+  DateTime? selectedDate;
+
+  void selectDate(BuildContext context) async {
+    DateTime initialDate = DateTime.now();
+    DateTime firstDate = DateTime(2023);
+    DateTime lastDate = DateTime(2030);
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
+  void createAppointment() {
+    if (selectedPerson != null && selectedDate != null) {
+      final formattedDate = DateFormat('dd/MM/yyyy').format(selectedDate!);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Appointment Created'),
+            content: Text(
+                'Your appointment with $selectedPerson on $formattedDate has been created.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a person and a date!'),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Appointment System'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '1. Select a Person',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            DropdownButton<String>(
+              hint: const Text('Select a person'),
+              value: selectedPerson,
+              items: people.map((String person) {
+                return DropdownMenuItem<String>(
+                  value: person,
+                  child: Text(person),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  selectedPerson = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              '2. Select a Date',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            ElevatedButton(
+              onPressed: () => selectDate(context),
+              child: Text(selectedDate == null
+                  ? 'Pick a Date'
+                  : 'Selected Date: ${DateFormat('dd/MM/yyyy').format(selectedDate!)}'),
+            ),
+            const Spacer(),
+            Center(
+              child: ElevatedButton(
+                onPressed: createAppointment,
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  'Create Appointment',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class GradeCalculatorPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Grade Calculator'),
+        centerTitle: true,
+      ),
+      body: GradeCalculatorScreen(),
+    );
+  }
+}
+
+class GradeCalculatorScreen extends StatefulWidget {
+  @override
+  _GradeCalculatorScreenState createState() => _GradeCalculatorScreenState();
+}
+
+class _GradeCalculatorScreenState extends State<GradeCalculatorScreen> {
+  final TextEditingController _vizeController = TextEditingController();
+  final TextEditingController _finalController = TextEditingController();
+  String _donemNotu = '';
+  String _harfNotu = '';
+
+  void hesaplaNot() {
+    final vize = double.tryParse(_vizeController.text) ?? 0.0;
+    final finalNotu = double.tryParse(_finalController.text) ?? 0.0;
+
+    double donemNotu = vize * 0.3 + finalNotu * 0.7;
+
+    String harfNotu = '';
+    if (donemNotu <= 100 && donemNotu >= 90) {
+      harfNotu = 'A';
+    } else if (donemNotu <= 89 && donemNotu >= 80) {
+      harfNotu = 'B';
+    } else if (donemNotu <= 79 && donemNotu >= 70) {
+      harfNotu = 'C';
+    } else if (donemNotu <= 69 && donemNotu >= 60) {
+      harfNotu = 'D';
+    } else if (donemNotu <= 59 && donemNotu >= 50) {
+      harfNotu = 'E';
+    } else {
+      harfNotu = 'F';
+    }
+
+    setState(() {
+      _donemNotu = donemNotu.toStringAsFixed(2);
+      _harfNotu = harfNotu;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _vizeController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Midterm Grade',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _finalController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Final Grade',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: hesaplaNot,
+              child: const Text('Calculate Grade'),
+            ),
+            const SizedBox(height: 16),
+            if (_donemNotu.isNotEmpty)
+              Text(
+                'Term Grade: $_donemNotu',
+                style: const TextStyle(fontSize: 18),
+              ),
+            if (_harfNotu.isNotEmpty)
+              Text(
+                'Letter Grade: $_harfNotu',
+                style: const TextStyle(fontSize: 18),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
